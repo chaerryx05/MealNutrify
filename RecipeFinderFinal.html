@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Meal Nutrify</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;0,9..144,800;0,9..144,900;1,9..144,700;1,9..144,800&family=Syne:wght@700;800&family=Syne+Mono&family=Outfit:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <link rel="stylesheet" href="stylee.css">
+</head>
+
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="hdr">
+      <div class="logo-icon">🍽</div>
+      <span class="logo-text"><span class="r">Meal</span><span class="g">Nutrify</span>&nbsp;<span
+          style="font-size:12px;color:var(--muted);font-weight:400;letter-spacing:0"></span></span>
+    </div>
+    <nav class="tab-row">
+      <button class="tab-btn active" id="tabGlobal" onclick="switchTab('global')">🌍 Global</button>
+      <button class="tab-btn" id="tabPH" onclick="switchTab('ph')">🇵🇭 Filipino</button>
+    </nav>
+    <div class="header-actions">
+      <button id="rvToggleBtn" class="hdr-icon-btn" title="Recently Viewed" aria-label="Recently Viewed"
+        onclick="togglePanel('rv')">
+        <span>🕐</span>
+        <span id="rvBadge" class="hdr-badge" style="display:none"></span>
+      </button>
+      <button id="favToggleBtn" class="hdr-icon-btn" title="My Favorites" aria-label="My Favorites"
+        onclick="togglePanel('fav')">
+        <span>🤍</span>
+        <span id="favBadge" class="hdr-badge" style="display:none"></span>
+      </button>
+      <button id="themeToggle" title="Toggle light / dark mode" aria-label="Toggle theme">
+        <span class="icon-sun">☀️</span>
+        <span class="icon-moon">🌙</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ══════════ RECENTLY VIEWED PANEL ══════════ -->
+  <div id="rvPanel" class="side-panel" style="display:none;">
+    <div class="side-panel-header">
+      <div class="side-panel-title">Recently Viewed</div>
+      <div class="side-panel-actions">
+        <button class="sp-clear-btn" onclick="clearRecentlyViewed()">Clear all</button>
+        <button class="sp-close-btn" onclick="togglePanel('rv')">✕</button>
+      </div>
+    </div>
+    <div id="rvPanelContent" class="side-panel-body">
+      <div class="sp-empty">
+        <div class="sp-empty-icon">🕐</div>
+        <p>No recently viewed recipes yet.</p>
+        <p class="sp-empty-sub">Open any recipe to start tracking.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ FAVORITES PANEL ══════════ -->
+  <div id="favPanel" class="side-panel" style="display:none;">
+    <div class="side-panel-header">
+      <div class="side-panel-title">My Favorites</div>
+      <div class="side-panel-actions">
+        <button class="sp-clear-btn" onclick="clearFavorites()">Clear all</button>
+        <button class="sp-close-btn" onclick="togglePanel('fav')">✕</button>
+      </div>
+    </div>
+    <div id="favPanelContent" class="side-panel-body">
+      <div class="sp-empty">
+        <div class="sp-empty-icon">🤍</div>
+        <p>No favorites saved yet.</p>
+        <p class="sp-empty-sub">Tap the 🤍 on any recipe to save it here.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Panel backdrop -->
+  <div id="panelBackdrop" class="panel-backdrop" style="display:none;" onclick="closeAllPanels()"></div>
+
+  <main>
+
+    <!-- ══════════ GLOBAL TAB ══════════ -->
+    <div id="globalTab">
+      <div class="hero">
+        <div class="hero-left">
+          <div class="hero-kicker red-kicker">Recipe Intelligence</div>
+          <h1>
+            <span class="line-white">Find Any Recipe.</span>
+            <span class="line-fade">Know Every Macro.</span>
+          </h1>
+          <p>Search real recipes with complete live nutrition data.</p>
+        </div>
+        <div class="hero-stats">
+          <div class="hstat">
+            <div class="hstat-n">380K+</div>
+            <div class="hstat-l">Recipes</div>
+          </div>
+          <div class="hstat">
+            <div class="hstat-n">30+</div>
+            <div class="hstat-l">Nutrients</div>
+          </div>
+        </div>
+      </div>
+      <div class="search-row">
+        <div class="search-wrap">
+          <span class="icon">🔍</span>
+          <input id="searchInput" class="search-input" type="text"
+            placeholder="Search recipes… pasta, grilled chicken…" />
+        </div>
+        <button id="searchBtn" class="search-btn">Search</button>
+      </div>
+      <div class="filters">
+        <select id="dietFilter">
+          <option value="">All Diets</option>
+          <option value="vegetarian">Vegetarian</option>
+          <option value="vegan">Vegan</option>
+          <option value="gluten free">Gluten Free</option>
+          <option value="ketogenic">Keto</option>
+          <option value="paleo">Paleo</option>
+        </select>
+        <select id="sortFilter">
+          <option value="popularity">Popular</option>
+          <option value="healthiness">Healthiest</option>
+          <option value="time">Quickest</option>
+          <option value="calories">Lowest Cal</option>
+        </select>
+        <input id="maxCalInput" type="number" placeholder="Max calories" min="0" />
+        <span id="totalCount"></span>
+      </div>
+      <div id="errorBox" class="error-box" style="display:none;"></div>
+      <div id="spinnerWrap" class="spinner-wrap" style="display:none;">
+        <div class="spinner"></div>
+        <p>Fetching recipes…</p>
+      </div>
+      <div id="globalFeatured"></div>
+      <div id="globalBackBar" style="display:none;" class="back-bar">
+        <button class="back-btn" onclick="showGlobalFeatured()">← Back to Categories</button>
+        <span id="globalBackLabel"></span>
+      </div>
+      <div id="emptyStart" class="empty" style="display:none;">
+        <div class="em">🥘</div>
+        <h3>Ready to cook something great?</h3>
+        <p>Type anything above and hit Search.</p>
+      </div>
+      <div id="emptyResult" class="empty" style="display:none;">
+        <div class="em">😕</div>
+        <p style="font-size:15px;">No recipes matched. Try a different search.</p>
+      </div>
+      <div id="recipeGrid"></div>
+      <div class="pagination" id="pagination" style="display:none;">
+        <button id="prevBtn">← Prev</button>
+        <span id="pageInfo"></span>
+        <button id="nextBtn">Next →</button>
+      </div>
+    </div>
+
+    <!-- ══════════ FILIPINO TAB ══════════ -->
+    <div id="phTab" style="display:none;">
+      <div class="hero">
+        <div class="hero-left">
+          <div class="hero-kicker">Filipino Cuisine</div>
+          <h1>
+            <span class="line-white">Authentic Flavors.</span>
+            <span class="line-fade">Complete Nutrition.</span>
+          </h1>
+          <p>80+ classic Filipino dishes with full nutrition data, ingredients & step-by-step
+            instructions.</p>
+        </div>
+        <div class="hero-stats">
+          <div class="hstat">
+            <div class="hstat-n green">80+</div>
+            <div class="hstat-l">PH Dishes</div>
+          </div>
+          <div class="hstat">
+            <div class="hstat-n green">12</div>
+            <div class="hstat-l">Categories</div>
+          </div>
+        </div>
+      </div>
+      <div class="search-row">
+        <div class="search-wrap">
+          <span class="icon">🔍</span>
+          <input id="phSearchInput" class="search-input" type="text"
+            placeholder="Search… adobo, sinigang, kare-kare, lechon…" />
+        </div>
+        <button id="phSearchBtn" class="search-btn">Search</button>
+      </div>
+
+      <div id="phFeatured"></div>
+      <div id="phBackBar" style="display:none;" class="back-bar">
+        <button class="back-btn" onclick="showPHFeatured()">← Back to Categories</button>
+        <span id="phBackLabel"></span>
+      </div>
+      <div id="phCount" class="result-count" style="margin-bottom:16px;"></div>
+      <div id="phGrid"></div>
+      <div id="phEmpty" class="empty" style="display:none;">
+        <div class="em">🔍</div>
+        <p>No dishes matched. Try a different keyword.</p>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Modal -->
+  <div id="modalOverlay">
+    <div id="modalBox">
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <!-- ── Mobile bottom tab bar (visible only on phones) ── -->
+  <nav class="mobile-tab-bar" id="mobileTabBar">
+    <button class="mob-tab active" id="mobTabGlobal" onclick="switchTab('global')">
+      <span class="mob-icon">🌍</span>
+      Global
+    </button>
+    <button class="mob-tab" id="mobTabPH" onclick="switchTab('ph')">
+      <span class="mob-icon">🇵🇭</span>
+      Filipino
+    </button>
+  </nav>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
