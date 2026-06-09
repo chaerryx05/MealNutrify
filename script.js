@@ -110,7 +110,7 @@ const PH_IMG = {
   ph010: "https://boondockingrecipes.com/wp-content/uploads/2025/01/27.-Filipino-Beef-Mechado-Recipe-2-768x508.jpg",
   ph011: "https://theskinnypot.com/wp-content/uploads/2023/11/Chicken-Afritada-with-Tomato-Sauce-800x1200.jpg",
   ph012: "https://panlasangpinoy.com/wp-content/uploads/2017/12/Filipino-Pork-Menudo-Recipe-.jpg",
-  ph013: "https://kusinasecrets.com/wp-content/uploads/2024/10/u3317447599_httpss.mj_.runB54LQ5QovTk_top_down_view_of_steamin_eaf47cad-584c-4c3a-a0d3-3014b04b9bc4_1.png",
+  ph013: "https://i.pinimg.com/originals/03/01/ed/0301ed79f68d2f3ef0af6a61f0b82143.jpg",
   ph014: "https://assets.unileversolutions.com/v1/89746311.jpg",
   ph015: "https://i.pinimg.com/originals/44/e1/76/44e17655f3864e91a766099f70f2048b.jpg",
   ph016: "https://i.pinimg.com/originals/3c/3e/cc/3c3ecc439ba98330e6f233bf07bf2350.jpg",
